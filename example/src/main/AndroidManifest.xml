@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="cn.yangchi.yangchi_mall">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name=".ExmpleApp"
         android:allowBackup="true"

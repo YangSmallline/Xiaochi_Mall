@@ -16,7 +16,7 @@ public class ExmpleApp extends Application {
         ChiChi_Mall.init(this)
                 .withIcon(new FontAwesomeModule())
                 .withIcon(new FontEcModul())
-                .widthAPiHost("http://127.0.0.1")
+                .widthAPiHost("http://www.qubaobei.com/")
                 .configure();
     }
 }
