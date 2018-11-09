@@ -1,7 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.yangchi.chichi_core" >
-
-    <application>
-        <activity android:name=".activities.ProxyActivity" />
-    </application>
+    xmlns:tools="http://schemas.android.com/tools"
+    package="cn.yangchi.chichi_core">
 </manifest>

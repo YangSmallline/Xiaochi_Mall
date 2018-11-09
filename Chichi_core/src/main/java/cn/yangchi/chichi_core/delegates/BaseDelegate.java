@@ -25,11 +25,10 @@ public abstract class BaseDelegate extends SwipeBackFragment {
 
         if (setLayout() instanceof Integer) {
             rootview=inflater.inflate((Integer) setLayout(),container,false);
-            Toast.makeText(getActivity(), (Integer) setLayout(),Toast.LENGTH_SHORT).show();
+
         }else if (setLayout() instanceof View){
             rootview= (View) setLayout();
         }
-
         if (rootview != null) {
             mUnbiner=ButterKnife.bind(this,rootview);
             onBindView(savedInstanceState,rootview);

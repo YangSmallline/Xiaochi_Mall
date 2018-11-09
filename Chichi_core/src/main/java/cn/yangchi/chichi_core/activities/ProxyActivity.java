@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.internal.widget.ContentFrameLayout;
+import android.widget.Toast;
 
 import cn.yangchi.chichi_core.R;
 import cn.yangchi.chichi_core.delegates.BaseDelegate;
@@ -14,8 +15,8 @@ public abstract class ProxyActivity extends SupportActivity {
     public abstract BaseDelegate setRootDelegate();
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         initContainer(savedInstanceState);
     }
 
@@ -34,4 +35,6 @@ public abstract class ProxyActivity extends SupportActivity {
         System.gc();
         System.runFinalization();
     }
+
+
 }
