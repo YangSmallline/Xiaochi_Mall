@@ -21,31 +21,34 @@ class ExampleDelegate : ChiChiDelegate() {
     }
 
     fun test() {
-      RestClient.builder()
+        RestClient.builder()
+                .loader(context)
                 .url("ios/cf/dish_list.php?stage_id=1&limit=20&page=1")
                 .failure(object : IFailure {
                     override fun onFailure() {
                     }
                 })
-                .setParams("", "")
-                .failure(object :IFailure{
-                    override fun onFailure() {
-                        Toast.makeText(context,"失败",Toast.LENGTH_SHORT).show()
-                    }
 
+                .setParams("", "")
+                .failure(object : IFailure {
+                    override fun onFailure() {
+                        Toast.makeText(context, "失败", Toast.LENGTH_SHORT).show()
+                    }
                 })
                 .error(object : IError {
                     override fun onError(code: Int, msg: String) {
-                        Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                     }
                 })
                 .success(object : ISuccess {
+
                     override fun onSuccess(response: String) {
-                        Toast.makeText(context,response,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
                     }
                 })
+
                 .build()
+
                 .get()
     }
-
 }

@@ -1,5 +1,7 @@
 package cn.yangchi.chichi_core.net;
 
+import android.content.Context;
+
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -8,6 +10,8 @@ import cn.yangchi.chichi_core.net.callback.IFailure;
 import cn.yangchi.chichi_core.net.callback.IRequest;
 import cn.yangchi.chichi_core.net.callback.ISuccess;
 import cn.yangchi.chichi_core.net.callback.RequestCallBacks;
+import cn.yangchi.chichi_core.ui.ChiChiLoader;
+import cn.yangchi.chichi_core.ui.LoaderStyle;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +25,9 @@ public class RestClient {
     private final IFailure FAILURE;
     private final IError iError;
     private final RequestBody BODY;
+    private LoaderStyle LOADER_STYLE;
+    private Context CONTEXT;
+
 
     public RestClient(String url,
                       WeakHashMap<String, Object> mParams,
@@ -28,7 +35,9 @@ public class RestClient {
                       ISuccess success,
                       IFailure failure,
                       IError ierror,
-                      RequestBody body) {
+                      RequestBody body,
+                      Context context
+            , LoaderStyle loaderStyle) {
         this.URL = url;
         PARAMS.putAll(mParams);
         this.REQUEST = request;
@@ -36,6 +45,8 @@ public class RestClient {
         this.FAILURE = failure;
         this.iError = ierror;
         this.BODY = body;
+        this.CONTEXT=context;
+        this.LOADER_STYLE=loaderStyle;
     }
 
     public static RestClientBuilder builder() {
@@ -48,6 +59,10 @@ public class RestClient {
 
         if (REQUEST != null) {
             REQUEST.onRequestStart();
+        }
+
+        if (LOADER_STYLE != null) {
+            ChiChiLoader.showLoading(CONTEXT,LOADER_STYLE.name());
         }
 
         switch (method) {
@@ -68,31 +83,33 @@ public class RestClient {
         }
 
 //        if (call == null) {
-            call.enqueue(getRequestCallBack());
+        call.enqueue(getRequestCallBack());
 //        }
     }
 
-    private Callback<String> getRequestCallBack(){
+    private Callback<String> getRequestCallBack() {
 
         return new RequestCallBacks(
-                REQUEST,SUCCESS,FAILURE,iError
+                REQUEST, SUCCESS, FAILURE, iError,LOADER_STYLE
         );
 
     }
 
-    public final void get(){
+    public final void get() {
         request(HttpMethod.GET);
     }
-    public final void post(){
+
+    public final void post() {
         request(HttpMethod.POST);
     }
-    public final void delete(){
+
+    public final void delete() {
         request(HttpMethod.DELETE);
     }
-    public final void put(){
+
+    public final void put() {
         request(HttpMethod.PUT);
     }
-
 
 
 }

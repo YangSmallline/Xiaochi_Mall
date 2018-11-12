@@ -1,8 +1,11 @@
 package cn.yangchi.chichi_core.net.callback;
 
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import cn.yangchi.chichi_core.ui.ChiChiLoader;
+import cn.yangchi.chichi_core.ui.LoaderStyle;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -12,12 +15,16 @@ public class RequestCallBacks implements Callback<String> {
     private final ISuccess SUCCESS;
     private final IFailure FAILURE;
     private final IError IERROR;
+    private final LoaderStyle LOADERSTYLE;
+    private static final Handler HANDLER=new Handler();
 
-    public RequestCallBacks(IRequest REQUEST, ISuccess SUCCESS, IFailure FAILURE, IError iError) {
+    public RequestCallBacks(IRequest REQUEST, ISuccess SUCCESS, IFailure FAILURE, IError iError,LoaderStyle LOADERSTYLE) {
         this.REQUEST = REQUEST;
         this.SUCCESS = SUCCESS;
         this.FAILURE = FAILURE;
         this.IERROR = iError;
+        this.LOADERSTYLE = LOADERSTYLE;
+
     }
 
     @Override
@@ -37,6 +44,15 @@ public class RequestCallBacks implements Callback<String> {
                 Log.i("tag", "IERROR: "+response.body());
             }
         }
+        if (LOADERSTYLE != null) {
+            HANDLER.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ChiChiLoader.stopLoading();
+                }
+            },1000);
+        }
+
     }
 
     @Override
@@ -48,5 +64,14 @@ public class RequestCallBacks implements Callback<String> {
         if (REQUEST != null) {
             REQUEST.onRequestEnd();
         }
+
+//        if (LOADERSTYLE != null) {
+//            HANDLER.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ChiChiLoader.stopLoading();
+//                }
+//            },1000);
+//        }
     }
 }

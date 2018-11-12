@@ -10,8 +10,14 @@ import java.util.HashMap;
 
 public class Configurator {
 
+    /**
+     * 存储配置信息的map
+     */
     private static final HashMap<String, Object> CHICHI_CONFIGS = new HashMap<String, Object>();
 
+    /**
+     * 存储图标库的list
+     */
     private static final ArrayList<IconFontDescriptor> ICONS=new ArrayList<>();
 
     private Configurator(){
@@ -23,10 +29,12 @@ public class Configurator {
         return Holder.INSTANCE;
     }
 
+    //通过holder生成的单例
     private static class Holder {
         private static final Configurator INSTANCE=new Configurator();
     }
 
+    //拿到配置信息的map
     final HashMap<String,Object> getChiCHiConfigs(){
         return CHICHI_CONFIGS;
     }

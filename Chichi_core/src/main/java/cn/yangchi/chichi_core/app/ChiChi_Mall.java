@@ -16,7 +16,7 @@ public final class ChiChi_Mall {
         return Configurator.getInstance().getChiCHiConfigs();
     }
 
-    public Context getApplication(){
+    public static Context getApplication(){
         return (Context) Configurator.getInstance().getChiCHiConfigs().get(ConfigType.APPLICATION_CONTEXT.name());
     }
 

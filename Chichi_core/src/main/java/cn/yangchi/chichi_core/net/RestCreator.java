@@ -10,7 +10,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-//处理网络的创造类
+/**
+ * 创建了retrofit,okhttp,和接口类
+ * 使用各自的hold进行管理
+ */
 public class RestCreator {
 
     public static WeakHashMap<String,Object> getParams(){
