@@ -1,10 +1,14 @@
 package cn.yangchi.chichi_core.net;
 
+import java.util.ArrayList;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.transform.sax.SAXTransformerFactory;
+
 import cn.yangchi.chichi_core.app.ChiChi_Mall;
 import cn.yangchi.chichi_core.app.ConfigType;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -16,15 +20,15 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 public class RestCreator {
 
-    public static WeakHashMap<String,Object> getParams(){
+    public static WeakHashMap<String, Object> getParams() {
         return ParamsHolder.PARAMS;
     }
 
-    private static final class ParamsHolder{
+    private static final class ParamsHolder {
         public static final WeakHashMap<String, Object> PARAMS = new WeakHashMap<>();
     }
 
-    public static RestService getRestService(){
+    public static RestService getRestService() {
         return RestServiceHolder.REST_SERVICE;
     }
 
@@ -43,8 +47,20 @@ public class RestCreator {
     //创建okhtttp
     private static final class OKHttpHolder {
         private static final int TIME_OUT = 60;
-        private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder()
-                .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+        private static final OkHttpClient.Builder BUILDER=new OkHttpClient.Builder();
+        private static final ArrayList<Interceptor> INTERCEPTORS = (ArrayList<Interceptor>) ChiChi_Mall.getConfigurations().get(ConfigType.INTERCEPTORS);
+
+        private static OkHttpClient.Builder addIntercepter(){
+            if (INTERCEPTORS != null && INTERCEPTORS.isEmpty()) {
+                for (Interceptor interceptor : INTERCEPTORS) {
+                    BUILDER.addInterceptor(interceptor);
+                }
+            }
+            return BUILDER;
+        }
+
+        private static final OkHttpClient OK_HTTP_CLIENT = addIntercepter()
+                .connectTimeout(TIME_OUT,TimeUnit.SECONDS)
                 .build();
     }
 

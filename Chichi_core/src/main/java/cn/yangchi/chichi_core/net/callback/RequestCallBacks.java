@@ -48,7 +48,7 @@ public class RequestCallBacks implements Callback<String> {
             HANDLER.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    ChiChiLoader.stopLoading();
+//                    ChiChiLoader.stopLoading();
                 }
             },1000);
         }
@@ -64,14 +64,5 @@ public class RequestCallBacks implements Callback<String> {
         if (REQUEST != null) {
             REQUEST.onRequestEnd();
         }
-
-//        if (LOADERSTYLE != null) {
-//            HANDLER.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ChiChiLoader.stopLoading();
-//                }
-//            },1000);
-//        }
     }
 }

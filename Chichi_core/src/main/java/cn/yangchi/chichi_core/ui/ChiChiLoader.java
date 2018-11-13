@@ -2,6 +2,7 @@ package cn.yangchi.chichi_core.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatDialog;
 import android.util.Log;
@@ -18,54 +19,50 @@ import cn.yangchi.chichi_core.R;
 import cn.yangchi.chichi_core.util.DimenUtil;
 
 public class ChiChiLoader {
-    private static String TAG = ChiChiLoader.class.getSimpleName();
-    private static final int LOADER_SIZE_SCALE=8;
-    private static final int LOADER_OFFEST_SCALE=8;
-    private static final String DEFAULT_LOADER=LoaderStyle.BallClipRotateIndicator.name();
+    private static final int LOADER_SIZE_SCALE = 8;
+    private static final int LOADER_OFFSET_SCALE = 10;
 
-    private static final ArrayList<Dialog> LOADERS = new ArrayList<>();
+    private static final ArrayList<AppCompatDialog> LOADERS = new ArrayList<>();
+
+    private static final String DEFAULT_LOADER = LoaderStyle.BallClipRotatePulseIndicator.name();
 
     public static void showLoading(Context context, Enum<LoaderStyle> type) {
-        showLoading(context,type.name());
+        showLoading(context, type.name());
     }
 
-    public static void showLoading(Context context, String tpye) {
-        //如果是dialog这个类显示你在webview和其他view上显示会报错
-        AppCompatDialog dialog= new AppCompatDialog(context);
+    public static void showLoading(Context context, String type) {
 
-        final AVLoadingIndicatorView avLoadingIndicatorView = LoaderCreator.create(tpye, context);
+        final AppCompatDialog dialog = new AppCompatDialog(context, R.style.dialog);
 
+        final AVLoadingIndicatorView avLoadingIndicatorView = LoaderCreator.create(type, context);
         dialog.setContentView(avLoadingIndicatorView);
 
-        int devicewidth=DimenUtil.getScreenWidth();
+        int deviceWidth = DimenUtil.getScreenWidth();
+        int deviceHeight = DimenUtil.getScreenHeight();
 
-        int deviceHeight=DimenUtil.getScreenHeight();
+        final Window dialogWindow = dialog.getWindow();
 
-        final Window dialogwindow=dialog.getWindow();
-
-        if (dialogwindow != null) {
-            WindowManager.LayoutParams lp=dialogwindow.getAttributes();
-            lp.width=devicewidth/LOADER_SIZE_SCALE;
-            lp.height=deviceHeight/LOADER_SIZE_SCALE;
-            lp.height=lp.height+deviceHeight/LOADER_OFFEST_SCALE;
-            lp.gravity=Gravity.CENTER;
+        if (dialogWindow != null) {
+            final WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+            lp.width = deviceWidth / LOADER_SIZE_SCALE;
+            lp.height = deviceHeight / LOADER_SIZE_SCALE;
+            lp.height = lp.height + deviceHeight / LOADER_OFFSET_SCALE;
+            lp.gravity = Gravity.CENTER;
         }
-
         LOADERS.add(dialog);
-
         dialog.show();
     }
 
     public static void showLoading(Context context) {
-        showLoading(context,DEFAULT_LOADER);
+        showLoading(context, DEFAULT_LOADER);
     }
 
-
     public static void stopLoading() {
-        for (Dialog dialog : LOADERS) {
-            Log.i("tag", "stopLoading1: "+dialog.toString());
+        for (AppCompatDialog dialog : LOADERS) {
             if (dialog != null) {
-               dialog.dismiss();
+                if (dialog.isShowing()) {
+                    dialog.cancel();
+                }
             }
         }
     }

@@ -8,12 +8,15 @@ import com.joanzapata.iconify.Iconify;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import okhttp3.Interceptor;
+
 public class Configurator {
 
     /**
      * 存储配置信息的map
      */
     private static final HashMap<String, Object> CHICHI_CONFIGS = new HashMap<String, Object>();
+    private static final ArrayList<Interceptor> INTERCEPTORS = new ArrayList<>();
 
     /**
      * 存储图标库的list
@@ -23,6 +26,12 @@ public class Configurator {
     private Configurator(){
         //一开始肯定是没有初始化好的
         CHICHI_CONFIGS.put(ConfigType.CONFIG_READY.name(),false);
+    }
+
+    public final Configurator withInterceptor(Interceptor interceptor) {
+        INTERCEPTORS.add(interceptor);
+        CHICHI_CONFIGS.put(ConfigType.INTERCEPTORS.name(),INTERCEPTORS);
+        return this;
     }
 
     public static Configurator getInstance(){

@@ -22,7 +22,7 @@ class ExampleDelegate : ChiChiDelegate() {
 
     fun test() {
         RestClient.builder()
-                .loader(context)
+                .loader(activity)
                 .url("ios/cf/dish_list.php?stage_id=1&limit=20&page=1")
                 .failure(object : IFailure {
                     override fun onFailure() {
@@ -32,7 +32,7 @@ class ExampleDelegate : ChiChiDelegate() {
                 .setParams("", "")
                 .failure(object : IFailure {
                     override fun onFailure() {
-                        Toast.makeText(context, "失败", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "失败", Toast.LENGTH_SHORT).show()
                     }
                 })
                 .error(object : IError {

@@ -2,7 +2,7 @@ package cn.yangchi.chichi_core.net;
 
 import android.content.Context;
 
-import java.util.Map;
+import java.io.File;
 import java.util.WeakHashMap;
 
 import cn.yangchi.chichi_core.net.callback.IError;
@@ -10,8 +10,10 @@ import cn.yangchi.chichi_core.net.callback.IFailure;
 import cn.yangchi.chichi_core.net.callback.IRequest;
 import cn.yangchi.chichi_core.net.callback.ISuccess;
 import cn.yangchi.chichi_core.net.callback.RequestCallBacks;
-import cn.yangchi.chichi_core.ui.ChiChiLoader;
+import cn.yangchi.chichi_core.net.download.DownloadHandler;
 import cn.yangchi.chichi_core.ui.LoaderStyle;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +29,10 @@ public class RestClient {
     private final RequestBody BODY;
     private LoaderStyle LOADER_STYLE;
     private Context CONTEXT;
+    private File FILE;
+    private final String DOWNLOAD_DIR;
+    private final String EXTENSION;
+    private final String NAME;
 
 
     public RestClient(String url,
@@ -35,18 +41,26 @@ public class RestClient {
                       ISuccess success,
                       IFailure failure,
                       IError ierror,
+                      File file,
                       RequestBody body,
                       Context context
-            , LoaderStyle loaderStyle) {
+            , LoaderStyle loaderStyle,
+                      String download_dir,
+                      String extension,
+                      String name) {
         this.URL = url;
+        FILE = file;
+        DOWNLOAD_DIR = download_dir;
+        EXTENSION = extension;
+        NAME = name;
         PARAMS.putAll(mParams);
         this.REQUEST = request;
         this.SUCCESS = success;
         this.FAILURE = failure;
         this.iError = ierror;
         this.BODY = body;
-        this.CONTEXT=context;
-        this.LOADER_STYLE=loaderStyle;
+        this.CONTEXT = context;
+        this.LOADER_STYLE = loaderStyle;
     }
 
     public static RestClientBuilder builder() {
@@ -55,6 +69,7 @@ public class RestClient {
 
     private void request(HttpMethod method) {
         final RestService restService = RestCreator.getRestService();
+
         Call<String> call = null;
 
         if (REQUEST != null) {
@@ -62,7 +77,7 @@ public class RestClient {
         }
 
         if (LOADER_STYLE != null) {
-            ChiChiLoader.showLoading(CONTEXT,LOADER_STYLE.name());
+//            ChiChiLoader.showLoading(CONTEXT,LOADER_STYLE.name());
         }
 
         switch (method) {
@@ -78,6 +93,19 @@ public class RestClient {
             case DELETE:
                 call = restService.delete(URL, PARAMS);
                 break;
+            case POST_RAW:
+                call = restService.postRaw(URL, BODY);
+                break;
+            case PUT_RAW:
+                call = restService.postRaw(URL, BODY);
+                break;
+            case UPLOAD:
+                RequestBody requestBody =
+                        RequestBody.create(MediaType.parse(MultipartBody.FORM.toString()), FILE);
+                MultipartBody.Part body =
+                        MultipartBody.Part.createFormData("file", FILE.getName());
+                call = RestCreator.getRestService().upload(URL, body);
+                break;
             default:
                 break;
         }
@@ -90,7 +118,7 @@ public class RestClient {
     private Callback<String> getRequestCallBack() {
 
         return new RequestCallBacks(
-                REQUEST, SUCCESS, FAILURE, iError,LOADER_STYLE
+                REQUEST, SUCCESS, FAILURE, iError, LOADER_STYLE
         );
 
     }
@@ -100,7 +128,14 @@ public class RestClient {
     }
 
     public final void post() {
-        request(HttpMethod.POST);
+        if (BODY == null) {
+            request(HttpMethod.POST);
+        } else {
+            if (!PARAMS.isEmpty()) {
+                throw new RuntimeException("parmas must not be null?");
+            }
+            request(HttpMethod.POST_RAW);
+        }
     }
 
     public final void delete() {
@@ -108,7 +143,22 @@ public class RestClient {
     }
 
     public final void put() {
-        request(HttpMethod.PUT);
+        if (BODY == null) {
+            request(HttpMethod.PUT);
+        } else {
+            if (!PARAMS.isEmpty()) {
+                throw new RuntimeException("parmas must not be null?");
+            }
+            request(HttpMethod.PUT_RAW);
+        }
+    }
+
+    public final void upload(){
+        request(HttpMethod.UPLOAD);
+    }
+
+    public final void download(){
+        new DownloadHandler(URL,REQUEST,SUCCESS,FAILURE,iError,DOWNLOAD_DIR,EXTENSION,NAME).handleDownload();
     }
 
 
